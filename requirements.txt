@@ -1,0 +1,11 @@
+langchain
+langchain-openai
+langchain-anthropic
+jira
+requests
+locust
+pydantic
+python-dotenv
+click
+pytest
+rich

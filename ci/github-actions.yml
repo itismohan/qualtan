@@ -1,0 +1,44 @@
+name: MATAF CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          
+      - name: Install Playwright dependencies
+        run: |
+          npm install
+          npx playwright install --with-deps
+          
+      - name: Run Playwright Tests
+        run: npm test
+        
+      - name: Run Performance Tests (Smoke)
+        run: locust -f performance/locustfile.py --headless -u 10 -r 2 -t 1m --host=https://api.example.com
+        
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: playwright-report/

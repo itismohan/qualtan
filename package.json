@@ -1,0 +1,15 @@
+{
+  "name": "mataf-playwright",
+  "version": "1.0.0",
+  "description": "AI-driven Playwright TypeScript testing engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "codegen": "playwright codegen"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
