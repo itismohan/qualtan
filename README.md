@@ -1,10 +1,9 @@
-# SAINT: Smart AI-driven Integrated Network for Testing
-
+# QUALTAN: Your Spartan for Quality
 ## Overview
-The **SAINT** framework is a cutting-edge, multi-agent test automation solution designed to maximize efficiency and coverage across the entire testing lifecycle. It utilizes a modular, agent-based architecture built on Python and LangChain to automate everything from requirement analysis to performance and security testing.
+The **QUALTAN** framework is a cutting-edge, multi-agent test automation solution designed to maximize efficiency and coverage across the entire testing lifecycle. It utilizes a modular, agent-based architecture built on Python and LangChain to automate everything from requirement analysis to performance and security testing.
 
 ## Key Features and Agentic Architecture
-SAINT's power lies in its specialized, cooperative agents:
+**QUALTAN's** power lies in its specialized, cooperative agents:
 
 | Agent | Purpose | CLI Command | Example Usage |
 | :--- | :--- | :--- | :--- |
