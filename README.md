@@ -58,17 +58,4 @@ The `mcp.json` file allows you to integrate SAINT's agents directly into your ID
 4.  **Integration**: Follow your IDE's instructions to load the `mcp.json` file. Once loaded, you can call the agents directly from the chat, for example:
     *   **Cursor IDE/Claude Desktop Prompt**: "Use the `jira_agent` tool to analyze story `PROJ-456`."
 
-## Folder Structure
-\`\`\`
-saint/
-├── agents/                 # All specialized AI and integration agents
-├── core/                   # Core utilities and configuration
-├── playwright/             # Playwright TypeScript framework
-├── performance/            # Locust performance tests
-├── cli/                    # CLI interface for orchestration
-├── ci/                     # CI/CD pipeline configs
-├── examples/               # Example test cases
-├── .env.example            # Template for environment variables
-├── mcp.json                # MCP configuration for IDEs
-└── README.md
-\`\`\`
+
