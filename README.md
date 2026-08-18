@@ -170,7 +170,7 @@ Generated test artifacts pass the following gates before a workflow can succeed:
 | `generated_test_source_safety` | Rejects unsafe paths, XPath, fixed waits, dynamic evaluation, process execution, and missing assertions |
 | `typescript_compile` | Compiles generated TypeScript in an isolated temporary workspace |
 
-The CI workflow in `ci/github-actions.yml` runs the same framework tests, committed Playwright tests, a bounded Locust smoke test, dependency advisory checks, and artifact upload steps.
+The active GitHub Actions workflow in [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) runs the same framework tests, optional committed Playwright/Locust checks, advisory scans, artifact publication, and a protected Kubernetes deployment job. The legacy CI reference remains in `ci/github-actions.yml`; use the [GitHub Actions CI/CD guide](docs/GITHUB_ACTIONS_CICD.md) to configure GitHub Environments, deployment variables, approvals, and rollback.
 
 ## MCP server
 
