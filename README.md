@@ -17,6 +17,21 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/itismohan/qualtan/actions/workflows/ci-cd.yml">
+    <img src="https://github.com/itismohan/qualtan/actions/workflows/ci-cd.yml/badge.svg?branch=main" alt="CI/CD status"/>
+  </a>
+  <a href="docs/MCP_SECURITY_AUDIT.md">
+    <img src="https://img.shields.io/badge/security-pip--audit%20enforced-success" alt="Security audit enforced"/>
+  </a>
+  <a href="#security-model">
+    <img src="https://img.shields.io/badge/execution-approval--gated-blueviolet" alt="Execution requires approval"/>
+  </a>
+  <a href="docs/AI_IDE_AND_NETWORK_TESTING.md">
+    <img src="https://img.shields.io/badge/network%20tests-deterministic%20mocks-0a7b83" alt="Deterministic network tests"/>
+  </a>
+</p>
+
 # QUALTAN: Governed AI Quality Engineering
 
 QUALTAN is a **typed, durable, and policy-controlled** AI quality engineering framework. It turns requirements into validated test artifacts while keeping probabilistic model reasoning separate from deterministic validation and approval gates.
@@ -97,6 +112,46 @@ npx playwright install --with-deps chromium
 ```
 
 The `.env` file must never be committed. At minimum, configure an approved model provider, Jira credentials for Jira-backed flows, and non-production execution hosts. Keep `QUALTAN_ALLOW_EXTERNAL_MUTA[...]
+
+## Quick-start examples
+
+The commands below are safe local starting points. The mock suites use deterministic in-process routes and a local mock service; they do not require a live API, GraphQL endpoint, or external placeholder host.
+
+| Goal | Command | Expected result |
+|---|---|---|
+| Run the Python regression suite | `pytest -q tests` | Validates typed contracts, workflow controls, security policy, and IDE MCP templates. |
+| Run browser API and GraphQL mocks | `CI=1 npm run test:mocks` | Exercises Playwright route stubs without external DNS or service dependencies. |
+| Run the performance smoke check | `python3 scripts/run_performance_smoke.py` | Starts and tears down the local REST/GraphQL mock server around the Locust smoke runner. |
+| Check project structure | `python3 scripts/validate_framework.py` | Verifies key files, architecture artefacts, test fixtures, and configuration integrity. |
+
+### Example: validate the repository before a pull request
+
+```bash
+python3 -m compileall -q agents application cli core domain evals infrastructure integrations validators tests mcp_server.py
+pytest -q tests
+CI=1 npm run test:mocks
+python3 scripts/run_performance_smoke.py
+python3 scripts/validate_framework.py
+```
+
+### Example: create, approve, and resume a governed workflow
+
+The workflow deliberately pauses after generation. Review the proposed artifacts, record a named approval, then resume validation and evaluation.
+
+```bash
+python3 cli/main.py full-cycle --story QUAL-123
+
+python3 cli/main.py workflow-approve \
+  --work-item <work-item-id> \
+  --request <approval-request-id> \
+  --approver qa-lead@example.com \
+  --note "Reviewed test intent and selector strategy"
+
+python3 cli/main.py workflow-resume --work-item <work-item-id>
+python3 cli/main.py workflow-eval --work-item <work-item-id>
+```
+
+> **Safety boundary:** Passing `--approve-generated` approves generated artifacts only. It does not enable external mutations or execute tests against an environment. See the [policy configuration](#policy-configuration) and [security model](#security-model) before enabling integrations.
 
 ## Policy configuration
 
