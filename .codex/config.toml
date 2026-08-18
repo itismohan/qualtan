@@ -1,0 +1,8 @@
+[mcp_servers.qualtan]
+command = "python"
+args = ["mcp_server.py"]
+cwd = "."
+env_vars = ["PYTHONPATH"]
+startup_timeout_sec = 20
+tool_timeout_sec = 120
+default_tools_approval_mode = "prompt"

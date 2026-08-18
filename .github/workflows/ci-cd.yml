@@ -76,17 +76,9 @@ jobs:
           npx playwright install --with-deps chromium
           npm test
 
-      - name: Explain skipped Locust smoke test
-        if: ${{ hashFiles('performance/locustfile.py') != '' && vars.PERFORMANCE_SMOKE_BASE_URL == '' }}
-        run: |
-          echo "::notice::Locust smoke test skipped because PERFORMANCE_SMOKE_BASE_URL is not configured."
-          echo "Configure an allowlisted non-production URL as a repository variable to enable this network check."
-
-      - name: Run Locust smoke test against configured staging target
-        if: ${{ hashFiles('performance/locustfile.py') != '' && vars.PERFORMANCE_SMOKE_BASE_URL != '' }}
-        env:
-          PERFORMANCE_SMOKE_BASE_URL: ${{ vars.PERFORMANCE_SMOKE_BASE_URL }}
-        run: locust -f performance/locustfile.py --headless -u 2 -r 1 -t 15s --host="$PERFORMANCE_SMOKE_BASE_URL"
+      - name: Run Locust smoke test against isolated local mock API
+        if: ${{ hashFiles('performance/locustfile.py') != '' }}
+        run: python scripts/run_performance_smoke.py
 
       - name: Check Python dependency advisories
         run: |

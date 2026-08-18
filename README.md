@@ -176,6 +176,8 @@ pytest -q tests
 python3 scripts/validate_framework.py
 ```
 
+For deterministic REST/GraphQL route stubs and project-scoped MCP setup in Cursor, Claude Code, Codex, and Kiro, see the [AI IDE and network testing guide](docs/AI_IDE_AND_NETWORK_TESTING.md). The focused browser mock suite runs with `CI=1 npm run test:mocks` after Playwright Chromium is installed.
+
 Generated test artifacts pass the following gates before a workflow can succeed:
 
 | Gate | Purpose |

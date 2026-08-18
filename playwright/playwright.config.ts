@@ -1,12 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const isCi = Boolean(process.env.CI);
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  forbidOnly: isCi,
+  retries: isCi ? 2 : 0,
+  workers: isCi ? 1 : undefined,
+  reporter: isCi ? [['html', { open: 'never' }], ['list']] : 'html',
   use: {
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
@@ -16,13 +18,13 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // The CI workflow installs Chromium only. Developers retain cross-browser
+    // coverage locally while the fast CI suite remains deterministic and lean.
+    ...(!isCi
+      ? [
+          { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+          { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+        ]
+      : []),
   ],
 });

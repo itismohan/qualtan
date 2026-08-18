@@ -4,7 +4,8 @@
   "description": "AI-driven Playwright TypeScript testing engine",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test",
+    "test": "playwright test --config=playwright/playwright.config.ts",
+    "test:mocks": "playwright test --config=playwright/playwright.config.ts api-network-stubs",
     "codegen": "playwright codegen"
   },
   "devDependencies": {

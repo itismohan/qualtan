@@ -68,6 +68,7 @@ def main() -> int:
         "integrations",
         "validators",
         "tests",
+        "performance",
         "mcp_server.py",
     ]
     checks = [

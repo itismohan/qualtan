@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "qualtan": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["${CLAUDE_PROJECT_DIR:-.}/mcp_server.py"],
+      "env": {
+        "PYTHONPATH": "${CLAUDE_PROJECT_DIR:-.}"
+      }
+    }
+  }
+}
