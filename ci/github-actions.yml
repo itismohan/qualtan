@@ -49,8 +49,15 @@ jobs:
       - name: Run committed Playwright tests
         run: npm test
 
-      - name: Run performance smoke test
-        run: locust -f performance/locustfile.py --headless -u 2 -r 1 -t 15s --host=https://api.example.com
+      - name: Run performance smoke test against configured staging target
+        if: ${{ vars.PERFORMANCE_SMOKE_BASE_URL != '' }}
+        env:
+          PERFORMANCE_SMOKE_BASE_URL: ${{ vars.PERFORMANCE_SMOKE_BASE_URL }}
+        run: locust -f performance/locustfile.py --headless -u 2 -r 1 -t 15s --host="$PERFORMANCE_SMOKE_BASE_URL"
+
+      - name: Explain skipped performance smoke test
+        if: ${{ vars.PERFORMANCE_SMOKE_BASE_URL == '' }}
+        run: echo "::notice::Performance smoke test skipped because PERFORMANCE_SMOKE_BASE_URL is not configured."
 
       - name: Check dependency advisories
         run: |

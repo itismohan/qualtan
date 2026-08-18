@@ -12,9 +12,11 @@ The active automation workflow is [`.github/workflows/ci-cd.yml`](../.github/wor
 | Push to `main` | `validate` then `package` | Publishes an immutable source bundle with a SHA-256 checksum as an Actions artifact. It does not deploy. |
 | Manual dispatch with `deploy_environment=staging` or `production` | `validate` then `deploy` | Applies the selected repository Kustomize path and waits for the configured Deployment rollout. |
 
-The `validate` job installs Python dependencies, executes `scripts/validate_framework.py`, optionally runs committed Playwright tests and an existing Locust scenario, performs advisory scans without blocking delivery, and uploads local validation/test output. The immutable `package` job creates a Git archive of the exact validated commit and writes a SHA-256 checksum beside it.
+The `validate` job installs Python dependencies, executes `scripts/validate_framework.py`, optionally runs committed Playwright tests, performs advisory scans without blocking delivery, and uploads local validation/test output. The Locust scenario is deliberately skipped unless a repository variable supplies an explicit non-production target. The immutable `package` job creates a Git archive of the exact validated commit and writes a SHA-256 checksum beside it.
 
 ## Required GitHub configuration
+
+Create a repository-level Actions variable named `PERFORMANCE_SMOKE_BASE_URL` only when there is an approved, allowlisted non-production API target for the 15-second Locust smoke test. For example, it may contain `https://api-staging.example.internal`. Leave the variable unset to skip the network test safely; do **not** point it to a production endpoint or a placeholder host such as `api.example.com`.
 
 Create the `staging` and `production` GitHub Environments under **Settings → Environments**. Configure required reviewers for both, with additional reviewers for production. Limit the production environment to the `main` branch and do not permit self-approval.
 
