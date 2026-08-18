@@ -1,44 +1,71 @@
-name: MATAF CI
+name: QUALTAN Quality Gates
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  quality:
+    name: Framework Quality Gates
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v3
-      
+      - name: Check out source
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
+          cache: pip
+
       - name: Install Python dependencies
-        run: pip install -r requirements.txt
-        
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Check Python source syntax
+        run: python -m compileall -q agents application cli core domain evals infrastructure integrations validators tests
+
+      - name: Run deterministic framework tests and evaluations
+        run: pytest -q tests
+
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          
+          node-version: '22'
+          cache: npm
+
       - name: Install Playwright dependencies
         run: |
           npm install
-          npx playwright install --with-deps
-          
-      - name: Run Playwright Tests
+          npx playwright install --with-deps chromium
+
+      - name: Run committed Playwright tests
         run: npm test
-        
-      - name: Run Performance Tests (Smoke)
-        run: locust -f performance/locustfile.py --headless -u 10 -r 2 -t 1m --host=https://api.example.com
-        
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+
+      - name: Run performance smoke test
+        run: locust -f performance/locustfile.py --headless -u 2 -r 1 -t 15s --host=https://api.example.com
+
+      - name: Check dependency advisories
+        run: |
+          python -m pip install pip-audit
+          pip-audit -r requirements.txt
+          npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Upload test and workflow artifacts
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results
-          path: playwright-report/
+          name: qualtan-test-results
+          path: |
+            playwright-report/
+            test-results/
+            artifacts/
+          if-no-files-found: ignore

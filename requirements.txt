@@ -1,11 +1,16 @@
-langchain
-langchain-openai
-langchain-anthropic
-jira
-requests
-locust
-pydantic
-python-dotenv
-click
-pytest
-rich
+# Core quality workflow runtime
+pydantic>=2.7,<3
+python-dotenv>=1.0,<2
+click>=8.1,<9
+rich>=13.7,<14
+requests>=2.31,<3
+tenacity>=8.2,<10
+openai>=1.68,<3
+mcp>=1.6,<2
+
+# Integrations
+jira>=3.8,<4
+
+# Testing and execution
+pytest>=8.0,<9
+locust>=2.24,<3

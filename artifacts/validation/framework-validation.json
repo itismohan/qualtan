@@ -1,0 +1,100 @@
+{
+  "framework": "QUALTAN",
+  "validation_mode": "offline_no_external_side_effects",
+  "created_at": "2026-08-18T20:15:38.148886+00:00",
+  "passed": true,
+  "checks": [
+    {
+      "name": "python_compilation",
+      "passed": true,
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "-m",
+        "compileall",
+        "-q",
+        "agents",
+        "application",
+        "cli",
+        "core",
+        "domain",
+        "evals",
+        "infrastructure",
+        "integrations",
+        "validators",
+        "tests",
+        "mcp_server.py"
+      ],
+      "started_at": "2026-08-18T20:15:37.163173+00:00",
+      "finished_at": "2026-08-18T20:15:37.207745+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "regression_and_integration_tests",
+      "passed": true,
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "-m",
+        "pytest",
+        "-q",
+        "tests"
+      ],
+      "started_at": "2026-08-18T20:15:37.207791+00:00",
+      "finished_at": "2026-08-18T20:15:37.844661+00:00",
+      "exit_code": 0,
+      "stdout": ".............                                                            [100%]\n13 passed in 0.29s\n",
+      "stderr": ""
+    },
+    {
+      "name": "cli_command_discovery",
+      "passed": true,
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "cli/main.py",
+        "--help"
+      ],
+      "started_at": "2026-08-18T20:15:37.844693+00:00",
+      "finished_at": "2026-08-18T20:15:38.049509+00:00",
+      "exit_code": 0,
+      "stdout": "Usage: main.py [OPTIONS] COMMAND [ARGS]...\n\n  QUALTAN: governed, evidence-based AI quality engineering.\n\nOptions:\n  --help  Show this message and exit.\n\nCommands:\n  data-agent\n  full-cycle        Run the persisted requirement-to-validated-artifact...\n  jira-agent\n  knowledge-add     Add an explicitly approved document to the...\n  knowledge-list    List approved knowledge documents available to the...\n  perf-agent\n  report-agent\n  script-agent\n  security-agent\n  testcase-agent\n  workflow-approve  Record a human approval; this command does not...\n  workflow-eval     Evaluate a persisted work item using deterministic...\n  workflow-resume   Resume a persisted workflow after resolving its...\n  xray-agent\n",
+      "stderr": ""
+    },
+    {
+      "name": "mcp_configuration_json",
+      "passed": true,
+      "command": [
+        "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+        "-m",
+        "json.tool",
+        "mcp.json"
+      ],
+      "started_at": "2026-08-18T20:15:38.049537+00:00",
+      "finished_at": "2026-08-18T20:15:38.077761+00:00",
+      "exit_code": 0,
+      "stdout": "{\n    \"mcpServers\": {\n        \"qualtan\": {\n            \"command\": \"python\",\n            \"args\": [\n                \"mcp_server.py\"\n            ],\n            \"cwd\": \"/Users/mohankrishnagundala/Documents/qualtan\",\n            \"env\": {\n                \"PYTHONPATH\": \"/Users/mohankrishnagundala/Documents/qualtan\"\n            }\n        }\n    }\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "whitespace_integrity",
+      "passed": true,
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "started_at": "2026-08-18T20:15:38.077794+00:00",
+      "finished_at": "2026-08-18T20:15:38.148844+00:00",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "not_executed": [
+    "Live Jira retrieval",
+    "Live X-Ray mutation",
+    "Live model invocation",
+    "Browser execution against an external environment"
+  ],
+  "operator_note": "Run live integrations only after configuring approved credentials, targets, and human approvals."
+}

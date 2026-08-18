@@ -1,0 +1,96 @@
+flowchart TB
+    User([QA Engineer • CI • IDE Client]) --> Entry
+
+    subgraph Entry[Entry and Interoperability]
+        direction LR
+        CLI[Click CLI]
+        MCP[MCP Server]
+        Compat[Legacy Agent Facades]
+    end
+
+    Entry --> Control
+    Jira[Jira] --> Control
+    Specs[OpenAPI • UI Intent • Test Evidence] --> Control
+    Knowledge[Approved Quality Knowledge] --> Retrieval
+
+    subgraph Control[Governed Quality Control Plane]
+        direction TB
+        Workflow[Durable QualityWorkflow]
+        Contracts[Strict Domain Contracts<br/>QualityWorkItem and Typed Artifacts]
+        Approvals[Human Approval Gate]
+        Policy[Security and Policy<br/>redaction • allowlists • mutation controls]
+        Workflow <--> Contracts
+        Workflow --> Approvals
+        Policy --> Workflow
+    end
+
+    subgraph Intelligence[Evidence-Grounded Intelligence]
+        direction LR
+        Services[Requirement • Design • Code • Diagnosis<br/>Data • Security • Performance • Reporting]
+        Gateway[Central LLM Gateway<br/>schema • routing • retries • cache]
+        Models[(Approved Model Providers)]
+        Retrieval[Scope-Filtered Retrieval]
+        Services --> Gateway --> Models
+        Retrieval --> Services
+    end
+
+    Control --> Services
+    Policy --> Gateway
+
+    subgraph Assurance[Deterministic Assurance]
+        direction LR
+        Validators[Validation Pipeline<br/>schema • coverage • source safety • TypeScript]
+        Evals[Evaluation Graders]
+        Runner[Policy-Governed Test Runner]
+        Validators --> Evals
+    end
+
+    Control --> Validators
+    Approvals --> Validators
+    Policy --> Runner
+    Validators --> Runner
+
+    subgraph State[Durable State and Observability]
+        direction LR
+        ArtifactStore[(Atomic Artifact Store<br/>work items • evidence • knowledge)]
+        Telemetry[(Structured Telemetry<br/>task • model • latency • tokens)]
+    end
+
+    Workflow <--> ArtifactStore
+    Retrieval <--> ArtifactStore
+    Gateway --> Telemetry
+    Validators --> ArtifactStore
+    Runner --> ArtifactStore
+
+    subgraph External[Governed External Systems]
+        direction LR
+        Playwright[Playwright and Locust]
+        Xray[X-Ray]
+        Repo[Repository / PR Boundary]
+    end
+
+    Runner --> Playwright
+    Policy --> Xray
+    Policy --> Repo
+    Playwright --> ArtifactStore
+    ArtifactStore --> Report[Reports • Evidence • CI Artifacts]
+    Evals --> Report
+    Report --> User
+
+    classDef entry fill:#E8F1FF,stroke:#2563EB,color:#0F172A,stroke-width:1.8px;
+    classDef source fill:#ECFDF5,stroke:#059669,color:#052E16,stroke-width:1.8px;
+    classDef control fill:#FFF7ED,stroke:#EA580C,color:#431407,stroke-width:1.8px;
+    classDef intelligence fill:#F5F3FF,stroke:#7C3AED,color:#2E1065,stroke-width:1.8px;
+    classDef assurance fill:#FEFCE8,stroke:#CA8A04,color:#422006,stroke-width:1.8px;
+    classDef state fill:#F0FDFA,stroke:#0F766E,color:#042F2E,stroke-width:1.8px;
+    classDef external fill:#FFF1F2,stroke:#E11D48,color:#4C0519,stroke-width:1.8px;
+    classDef delivery fill:#EFF6FF,stroke:#1D4ED8,color:#172554,stroke-width:1.8px;
+
+    class CLI,MCP,Compat entry;
+    class Jira,Specs,Knowledge source;
+    class Workflow,Contracts,Approvals,Policy control;
+    class Services,Gateway,Models,Retrieval intelligence;
+    class Validators,Evals,Runner assurance;
+    class ArtifactStore,Telemetry state;
+    class Playwright,Xray,Repo external;
+    class Report delivery;

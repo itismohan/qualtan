@@ -1,18 +1,19 @@
-from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+"""Backward-compatible synthetic-data agent using a privacy-aware contract."""
 
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from agents._compat import data_service, pretty
+from infrastructure.llm_gateway import LLMGateway
+
+
+@dataclass
 class DataAgent:
-    def __init__(self):
-        self.llm = ChatOpenAI(model="gpt-4.1-mini")
+    gateway: LLMGateway | None = None
 
-    def generate_test_data(self, schema, count=5):
-        """Generates synthetic test data based on a schema or description."""
-        template = """
-        Generate {count} rows of synthetic test data in JSON format based on the following schema.
-        Schema: {schema}
-        
-        Ensure the data is realistic and covers edge cases (nulls, long strings, special characters).
-        """
-        prompt = PromptTemplate.from_template(template)
-        chain = prompt | self.llm
-        return chain.invoke({"schema": schema, "count": count}).content
+    def __post_init__(self) -> None:
+        self._data = data_service(self.gateway)
+
+    def generate_test_data(self, schema: str, count: int = 5) -> str:
+        return pretty(self._data.generate(schema, count))

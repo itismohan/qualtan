@@ -1,36 +1,24 @@
-from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
-import os
+"""Backward-compatible performance agent with safe planning boundaries."""
 
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from agents._compat import performance_service, pretty, reporting_service
+from infrastructure.llm_gateway import LLMGateway
+
+
+@dataclass
 class PerformanceAgent:
-    def __init__(self):
-        self.llm = ChatOpenAI(model="gpt-4.1-mini")
+    gateway: LLMGateway | None = None
 
-    def generate_locust_script(self, api_spec, load_profile="standard"):
-        """Generates a Locust performance script based on API spec and load profile."""
-        template = """
-        Generate a Python Locust script for the following API specification.
-        Load Profile: {profile}
-        API Spec: {spec}
-        
-        Requirements:
-        - Include tasks for all major endpoints.
-        - Use appropriate weightage.
-        - Include setup and teardown if necessary.
-        - Support both REST and GraphQL if present in spec.
-        """
-        prompt = PromptTemplate.from_template(template)
-        chain = prompt | self.llm
-        return chain.invoke({"spec": api_spec, "profile": load_profile}).content
+    def __post_init__(self) -> None:
+        self._performance = performance_service(self.gateway)
+        self._reporting = reporting_service(self.gateway)
 
-    def analyze_performance_results(self, stats_csv):
-        """Analyzes Locust results and suggests optimizations."""
-        template = """
-        Analyze the following Locust performance statistics and identify bottlenecks.
-        Stats: {stats}
-        
-        Provide recommendations for infrastructure or code improvements.
-        """
-        prompt = PromptTemplate.from_template(template)
-        chain = prompt | self.llm
-        return chain.invoke({"stats": stats_csv}).content
+    def generate_locust_script(self, api_spec: str, load_profile: str = "standard") -> str:
+        plan = self._performance.plan(f"Load profile: {load_profile}\n\nAPI specification:\n{api_spec}")
+        return plan.locust_script
+
+    def analyze_performance_results(self, stats_csv: str) -> str:
+        return pretty(self._reporting.summarize(f"Locust performance statistics:\n{stats_csv}"))

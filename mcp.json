@@ -1,70 +1,12 @@
 {
   "mcpServers": {
-    "saint-framework": {
+    "qualtan": {
       "command": "python",
-      "args": ["/absolute/path/to/saint/cli/main.py"],
+      "args": ["mcp_server.py"],
+      "cwd": "/Users/mohankrishnagundala/Documents/qualtan",
       "env": {
-        "PYTHONPATH": "/absolute/path/to/saint"
-      },
-      "tools": [
-        {
-          "name": "jira_agent",
-          "description": "Extracts and analyzes JIRA stories.",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "story": { "type": "string", "description": "JIRA issue key (e.g., PROJ-123)" }
-            },
-            "required": ["story"]
-          }
-        },
-        {
-          "name": "testcase_agent",
-          "description": "Generates Gherkin scenarios and test cases from analysis.",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "analysis": { "type": "string", "description": "The story analysis text" }
-            },
-            "required": ["analysis"]
-          }
-        },
-        {
-          "name": "script_agent",
-          "description": "Generates Playwright TypeScript scripts.",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "gherkin": { "type": "string", "description": "Gherkin scenario text" },
-              "type": { "type": "string", "enum": ["web", "api", "graphql"], "default": "web" }
-            },
-            "required": ["gherkin"]
-          }
-        },
-        {
-          "name": "data_agent",
-          "description": "Generates synthetic test data.",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "schema": { "type": "string", "description": "Data schema or description" },
-              "count": { "type": "integer", "default": 5 }
-            },
-            "required": ["schema"]
-          }
-        },
-        {
-          "name": "perf_agent",
-          "description": "Generates Locust performance scripts.",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "spec": { "type": "string", "description": "API specification" }
-            },
-            "required": ["spec"]
-          }
-        }
-      ]
+        "PYTHONPATH": "/Users/mohankrishnagundala/Documents/qualtan"
+      }
     }
   }
 }

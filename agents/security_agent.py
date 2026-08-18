@@ -1,22 +1,19 @@
-from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+"""Backward-compatible agent for safe, authorized security test planning."""
 
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+from agents._compat import pretty, security_service
+from infrastructure.llm_gateway import LLMGateway
+
+
+@dataclass
 class SecurityAgent:
-    def __init__(self):
-        self.llm = ChatOpenAI(model="gpt-4.1-mini")
+    gateway: LLMGateway | None = None
 
-    def generate_security_scenarios(self, api_spec):
-        """Generates security-focused test scenarios (SQLi, XSS, Auth bypass)."""
-        template = """
-        Based on the following API specification, generate security test scenarios.
-        API Spec: {spec}
-        
-        Focus on:
-        - Authentication and Authorization bypass
-        - Input validation (SQL Injection, XSS)
-        - Sensitive data exposure
-        - Rate limiting
-        """
-        prompt = PromptTemplate.from_template(template)
-        chain = prompt | self.llm
-        return chain.invoke({"spec": api_spec}).content
+    def __post_init__(self) -> None:
+        self._security = security_service(self.gateway)
+
+    def generate_security_scenarios(self, api_spec: str) -> str:
+        return pretty(self._security.assess(api_spec))

@@ -1,0 +1,147 @@
+flowchart TB
+    %% QUALTAN Modern Architecture and Controlled Workflow
+    Operator([QA Engineer / CI / IDE User])
+
+    subgraph Entry[Operator and Interoperability Layer]
+        CLI[Click CLI<br/>full-cycle • approval • evaluation • knowledge]
+        MCP[Governed MCP Server<br/>narrow typed tools]
+        Legacy[Legacy Agent Facades<br/>compatible command interfaces]
+    end
+
+    subgraph Sources[Approved Inputs and Evidence]
+        Jira[Jira Story / Acceptance Criteria]
+        Specs[OpenAPI / GraphQL / UI Test Intent]
+        Knowledge[Approved Quality Knowledge<br/>patterns • policies • prior evidence]
+        Evidence[Failure Evidence<br/>trace • DOM • accessibility • network • screenshot]
+    end
+
+    subgraph Controls[Security, Policy, and Data Controls]
+        Config[Typed Settings<br/>environment configuration]
+        Redaction[Sensitive Data Redactor]
+        Policy[Execution and Mutation Policy<br/>host allowlist • safe commands • approvals]
+        Approval[Human Approval Gate]
+    end
+
+    subgraph Core[QUALTAN Application and Domain Layer]
+        Workflow[Durable QualityWorkflow<br/>checkpointed state machine]
+        Domain[Strict Pydantic Domain Contracts<br/>QualityWorkItem and typed artifacts]
+        Req[Requirement Analysis Service]
+        Design[Test Design Service<br/>risk-based and evidence-grounded]
+        Code[Test Code Generation Service]
+        Diagnose[Failure Diagnosis Service<br/>review-required patch proposals]
+        Other[Data • Security • Performance • Reporting Services]
+    end
+
+    subgraph AI[AI and Retrieval Boundary]
+        Gateway[Central LLM Gateway<br/>routing • JSON Schema • retries • cache]
+        Models[(Approved Model Providers)]
+        Retrieval[Permission-filtered Knowledge Store<br/>scope-aware lexical retrieval]
+    end
+
+    subgraph Assurance[Deterministic Assurance Layer]
+        Validators[Validation Pipeline]
+        V1[Schema and Integrity Gate]
+        V2[Acceptance-Criteria Coverage Gate]
+        V3[Generated Source Safety Gate]
+        V4[Isolated TypeScript Compile Gate]
+        Evals[Evaluation Graders<br/>coverage • safety • completion]
+    end
+
+    subgraph Persistence[Durable State, Evidence, and Telemetry]
+        Artifacts[(Artifact Store<br/>atomic JSON work items and evidence)]
+        Telemetry[(JSONL Telemetry<br/>task • model • latency • tokens)]
+    end
+
+    subgraph External[Governed Execution and Integrations]
+        Runner[Policy-Governed Test Runner]
+        Playwright[Playwright / Locust Execution]
+        JiraAPI[Jira Gateway]
+        Xray[X-Ray Gateway<br/>mutations require enablement and approval]
+        Repo[Repository / PR Boundary<br/>future approved write path]
+    end
+
+    subgraph Delivery[Delivery and Quality Feedback]
+        Report[Executive Report and Evidence Summary]
+        CI[GitHub Actions<br/>tests • smoke checks • artifacts]
+    end
+
+    Operator --> CLI
+    Operator --> MCP
+    Operator --> Legacy
+    CLI --> Workflow
+    MCP --> Workflow
+    Legacy --> Req
+    Legacy --> Design
+    Legacy --> Code
+    Legacy --> Other
+
+    Jira --> JiraAPI --> Workflow
+    Specs --> Workflow
+    Knowledge --> Retrieval
+    Evidence --> Redaction --> Diagnose
+
+    Config --> Gateway
+    Config --> Policy
+    Redaction --> Gateway
+    Policy --> Approval
+
+    Workflow <--> Domain
+    Workflow --> Req --> Gateway
+    Workflow --> Design
+    Design <--> Retrieval
+    Design --> Gateway
+    Workflow --> Code --> Gateway
+    Diagnose --> Gateway
+    Other --> Gateway
+    Gateway <--> Models
+    Gateway --> Telemetry
+
+    Workflow --> Artifacts
+    Retrieval <--> Artifacts
+    Diagnose --> Artifacts
+    Workflow --> Approval
+    Approval -- approved --> Validators
+    Approval -- rejected --> Artifacts
+    Workflow --> Validators
+    Validators --> V1
+    Validators --> V2
+    Validators --> V3
+    Validators --> V4
+    Validators --> Artifacts
+    Validators --> Evals
+    Evals --> Artifacts
+
+    Policy --> Runner --> Playwright
+    Playwright --> Evidence
+    Runner --> Artifacts
+    Policy --> Xray
+    Policy --> Repo
+    Workflow --> JiraAPI
+    Workflow --> Xray
+
+    Artifacts --> Report
+    Evals --> Report
+    Report --> Operator
+    CI --> Validators
+    CI --> Playwright
+    CI --> Artifacts
+
+    classDef entry fill:#E8F1FF,stroke:#2563EB,color:#0F172A,stroke-width:1.5px;
+    classDef source fill:#ECFDF5,stroke:#059669,color:#052E16,stroke-width:1.5px;
+    classDef control fill:#FFF7ED,stroke:#EA580C,color:#431407,stroke-width:1.5px;
+    classDef core fill:#F5F3FF,stroke:#7C3AED,color:#2E1065,stroke-width:1.5px;
+    classDef ai fill:#FDF2F8,stroke:#DB2777,color:#500724,stroke-width:1.5px;
+    classDef assurance fill:#FEFCE8,stroke:#CA8A04,color:#422006,stroke-width:1.5px;
+    classDef storage fill:#F0FDFA,stroke:#0F766E,color:#042F2E,stroke-width:1.5px;
+    classDef external fill:#FFF1F2,stroke:#E11D48,color:#4C0519,stroke-width:1.5px;
+    classDef delivery fill:#EFF6FF,stroke:#1D4ED8,color:#172554,stroke-width:1.5px;
+
+    class CLI,MCP,Legacy entry;
+    class Jira,Specs,Knowledge,Evidence source;
+    class Config,Redaction,Policy,Approval control;
+    class Workflow,Domain,Req,Design,Code,Diagnose,Other core;
+    class Gateway,Models,Retrieval ai;
+    class Validators,V1,V2,V3,V4,Evals assurance;
+    class Artifacts,Telemetry storage;
+    class Runner,Playwright,JiraAPI,Xray,Repo external;
+    class Report,CI delivery;
