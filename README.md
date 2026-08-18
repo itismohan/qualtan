@@ -1,6 +1,10 @@
+<p align="center">
+  <img src="assets/logo.png" alt="QUALTAN logo" width="700"/>
+</p>
+
 # QUALTAN: Your Spartan for Quality
 ## Overview
-The **QUALTAN** framework is a cutting-edge, multi-agent test automation solution designed to maximize efficiency and coverage across the entire testing lifecycle. It utilizes a modular, agent-based architecture built on Python and LangChain to automate everything from requirement analysis to performance and security testing.
+The **QUALTAN** framework is a cutting-edge, multi-agent test automation solution designed to maximize efficiency and coverage across the entire testing lifecycle. It utilizes a modular, agent-base[...]
 
 ## Key Features and Agentic Architecture
 **QUALTAN's** power lies in its specialized, cooperative agents:
@@ -33,19 +37,19 @@ The **QUALTAN** framework is a cutting-edge, multi-agent test automation solutio
 
 ### Installation
 1.  **Clone the repository:**
-    \`\`\`bash
+    ```bash
     git clone <repository-url> saint
     cd saint
-    \`\`\`
+    ```
 2.  **Install Python dependencies:**
-    \`\`\`bash
+    ```bash
     pip install -r requirements.txt
-    \`\`\`
+    ```
 3.  **Install Node.js dependencies (for Playwright):**
-    \`\`\`bash
+    ```bash
     npm install
     npx playwright install --with-deps
-    \`\`\`
+    ```
 
 ## MCP Configuration for Cursor IDE and Claude Desktop
 
