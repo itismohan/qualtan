@@ -1,0 +1,25 @@
+# Local credentials and environment configuration
+.env
+.env.*
+*.env
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Python runtime output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node and browser-test output
+node_modules/
+playwright-report/
+test-results/
+
+# Local validation and operating-system files
+artifacts/validation/
+.DS_Store

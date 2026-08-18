@@ -33,6 +33,8 @@ def test_codex_project_config_uses_local_stdio_and_prompts_for_tool_approval() -
     assert server["command"] == "python"
     assert server["args"] == ["mcp_server.py"]
     assert server["cwd"] == "."
+    assert "env_vars" not in server
+    assert "env" not in server
     assert server["default_tools_approval_mode"] == "prompt"
     assert server["tool_timeout_sec"] >= 60
 
