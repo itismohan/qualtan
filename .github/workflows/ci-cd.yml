@@ -91,7 +91,7 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Upload validation and test evidence
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: qualtan-validation-${{ github.run_id }}
@@ -140,7 +140,7 @@ jobs:
           sha256sum qualtan-${{ github.sha }}.tar.gz | tee qualtan-${{ github.sha }}.sha256
 
       - name: Upload immutable framework bundle and package artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: qualtan-framework-${{ github.sha }}
           path: |
