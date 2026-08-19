@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -110,7 +110,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Check out exact validated commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
 
@@ -170,7 +170,7 @@ jobs:
       KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.sha }}
 
