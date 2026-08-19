@@ -5,7 +5,7 @@ click>=8.1,<9
 rich>=13.7,<14
 requests>=2.31,<3
 tenacity>=8.2,<10
-openai>=1.68,<3
+openai>=1.68,<4
 mcp>=1.6,<2
 
 # Integrations
