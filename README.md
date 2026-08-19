@@ -43,16 +43,16 @@ QUALTAN is a **typed, durable, and policy-controlled** AI quality engineering fr
 
 ## Implementation status
 
-The modernization described in this README is implemented in the local framework. The handover record in [`QUALTAN_IMPLEMENTATION_HANDOVER.md`](QUALTAN_IMPLEMENTATION_HANDOVER.md) maps each original g[...]
+The modernization described in this README is implemented in the local framework. The handover record in [`QUALTAN_IMPLEMENTATION_HANDOVER.md`](QUALTAN_IMPLEMENTATION_HANDOVER.md) maps each original gap to its implementation and validation evidence.
 
-> The local verification suite currently includes four deterministic regression tests and checks Python compilation, CLI command discovery, MCP configuration validity, and repository whitespace integr[...]
+> The local verification suite includes 23 Python tests and deterministic browser mock tests. It checks Python compilation, CLI command discovery, MCP configuration validity, package installation, and repository whitespace integrity.
 
 ## What is implemented
 
 | Capability | Implementation |
 |---|---|
 | Typed workflow artifacts | Strict Pydantic contracts for stories, risks, test plans, test code, security plans, performance plans, data, diagnoses, approvals, executions, and reports |
-| Schema-constrained generation | A central model gateway requests strict JSON-schema output, validates it, redacts sensitive input, records metadata, retries bounded failures, and caches safe request[...]
+| Schema-constrained generation | A central model gateway requests strict JSON-schema output, validates it, redacts sensitive input, records metadata, retries bounded failures, and caches safe requests |
 | Durable orchestration | A checkpointed work-item state machine persists after each meaningful workflow node and can resume safely after a stop or approval |
 | Requirement-to-test workflow | Jira ingestion, requirement analysis, risk-based test planning, Playwright test generation, deterministic validation, and explicit approval handling |
 | Generated-code quality gates | Domain schema, acceptance-criteria coverage, source-safety, and TypeScript compilation checks |
@@ -83,11 +83,11 @@ Jira / OpenAPI / test evidence
                          governed Jira / X-Ray / test execution
 ```
 
-The persisted `QualityWorkItem` is the workflow source of truth. It records the input story, generated artifacts, validation output, approval requests, execution evidence, and a chronological event lo[...]
+The persisted `QualityWorkItem` is the workflow source of truth. It records the input story, generated artifacts, validation output, approval requests, execution evidence, and a chronological event log for audit and recovery.
 
 ### Architecture and operations documentation
 
-The editable Mermaid sources and rendered architecture visuals are in [`docs/architecture/`](docs/architecture/). Use the high-level [architecture overview](docs/architecture/qualtan-architecture-over[...]
+The editable Mermaid sources and rendered architecture visuals are in [`docs/architecture/`](docs/architecture/). Use the high-level [architecture overview](docs/architecture/qualtan-architecture-overview.png) for component topology and the [modern architecture diagram](docs/architecture/qualtan-modern-architecture.png) for the end-to-end workflow.
 
 ## Repository layout
 
@@ -117,7 +117,7 @@ qualtan doctor --json
 
 Contributors may use `python3 -m pip install -r requirements.txt` instead. The `qualtan` command is the supported package entry point; `python3 cli/main.py` remains available for existing checkouts and scripts.
 
-The `.env` file must never be committed. At minimum, configure an approved model provider, Jira credentials for Jira-backed flows, and non-production execution hosts. Keep `QUALTAN_ALLOW_EXTERNAL_MUTA[...]
+The `.env` file must never be committed. At minimum, configure an approved model provider, Jira credentials for Jira-backed flows, and non-production execution hosts. Keep `QUALTAN_ALLOW_EXTERNAL_MUTATIONS=false` until a named approval and the required policy controls authorize an external mutation.
 
 ## Open-source community
 
@@ -188,7 +188,7 @@ python3 cli/main.py workflow-eval --work-item <work-item-id>
 
 ## Durable workflow commands
 
-The main workflow is intentionally approval-aware. The first command creates a persisted work item, analyzes the story, plans tests, generates test artifacts, and stops before validation when generate[...]
+The main workflow is intentionally approval-aware. The first command creates a persisted work item, analyzes the story, plans tests, generates test artifacts, and stops before validation when generated artifacts require human approval.
 
 ```bash
 python3 cli/main.py full-cycle --story QUAL-123
@@ -263,7 +263,7 @@ Generated test artifacts pass the following gates before a workflow can succeed:
 | `generated_test_source_safety` | Rejects unsafe paths, XPath, fixed waits, dynamic evaluation, process execution, and missing assertions |
 | `typescript_compile` | Compiles generated TypeScript in an isolated temporary workspace |
 
-The active GitHub Actions workflow in [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) runs the same framework tests, optional committed Playwright/Locust checks, advisory scans, artifact [...]
+The active GitHub Actions workflow in [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) runs the same framework tests, committed Playwright and Locust checks, enforced dependency audits, package-build and installation verification, SBOM generation, and artifact uploads.
 
 ## MCP server
 
@@ -276,12 +276,12 @@ The active GitHub Actions workflow in [`.github/workflows/ci-cd.yml`](.github/wo
 | `approve_generated_artifact` | Records a human approval; it does not execute tests or mutate external systems |
 | `get_quality_work_item` | Reads persisted workflow state and evidence |
 
-The repository `mcp.json` is configured for the attached local checkout. When moving the repository, update `cwd` and `PYTHONPATH` to the new absolute project directory, and ensure the same approved e[...]
+The repository includes project-scoped MCP templates for Cursor, Claude Code, Codex, and Kiro. Keep machine-specific paths and credentials out of committed configuration, retain prompt-based tool approval, and follow the [AI IDE and network testing guide](docs/AI_IDE_AND_NETWORK_TESTING.md) when configuring a local checkout.
 
 ## Security model
 
-QUALTAN treats Jira text, logs, HTML, DOM snapshots, network output, and API specifications as untrusted data. They may be analyzed as evidence but cannot override policy. External changes, repository[...]
+QUALTAN treats Jira text, logs, HTML, DOM snapshots, network output, and API specifications as untrusted data. They may be analyzed as evidence but cannot override policy. External changes, repository operations, and instructions embedded in untrusted input require a policy-permitted, human-approved path; they cannot override those controls.
 
 ## Development notes
 
-The framework is designed for incremental extension. Add a new quality capability by first defining strict domain contracts, then implementing a pure application service, adding deterministic validato[...]
+The framework is designed for incremental extension. Add a new quality capability by first defining strict domain contracts, then implementing a pure application service, adding deterministic validators and evaluations, registering only narrow integration boundaries, and documenting any security or compatibility impact in an RFC before exposing a new CLI or MCP surface.
