@@ -30,6 +30,9 @@
   <a href="docs/AI_IDE_AND_NETWORK_TESTING.md">
     <img src="https://img.shields.io/badge/network%20tests-deterministic%20mocks-0a7b83" alt="Deterministic network tests"/>
   </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="Apache-2.0 license"/>
+  </a>
 </p>
 
 # QUALTAN: Governed AI Quality Engineering
@@ -102,16 +105,34 @@ The editable Mermaid sources and rendered architecture visuals are in [`docs/arc
 
 ## Installation
 
-QUALTAN requires Python 3.11+ and Node.js 22+. Copy the environment template before configuring any integration or external target.
+QUALTAN requires Python 3.11+ and Node.js 22+. For a public package installation from a source checkout, install the project with its test extras. Copy the environment template before configuring any integration or external target.
 
 ```bash
 cp .env.example .env
-python3 -m pip install -r requirements.txt
+python3 -m pip install ".[test]"
 npm install
 npx playwright install --with-deps chromium
+qualtan doctor --json
 ```
 
+Contributors may use `python3 -m pip install -r requirements.txt` instead. The `qualtan` command is the supported package entry point; `python3 cli/main.py` remains available for existing checkouts and scripts.
+
 The `.env` file must never be committed. At minimum, configure an approved model provider, Jira credentials for Jira-backed flows, and non-production execution hosts. Keep `QUALTAN_ALLOW_EXTERNAL_MUTA[...]
+
+## Open-source community
+
+QUALTAN is available under the [Apache License 2.0](LICENSE). The project keeps its typed workflow engine, deterministic validators, policy controls, local MCP server, and reference integrations open. A future managed service may add centralized enterprise operations, but it must not weaken or replace the governed local core.
+
+| Topic | Resource |
+|---|---|
+| Contributing and DCO sign-off | [CONTRIBUTING.md](CONTRIBUTING.md) and [DCO.txt](DCO.txt) |
+| Community behavior and maintainership | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [GOVERNANCE.md](GOVERNANCE.md), and [MAINTAINERS.md](MAINTAINERS.md) |
+| Private vulnerability disclosure | [SECURITY.md](SECURITY.md) |
+| Getting help and proposing work | [SUPPORT.md](SUPPORT.md) and the repository issue forms |
+| Offline first-successful workflow | [examples/offline-demo](examples/offline-demo/README.md) |
+| Public-release operations | [RELEASE.md](RELEASE.md) and [docs/OPEN_SOURCE_RELEASE.md](docs/OPEN_SOURCE_RELEASE.md) |
+
+> **Security guarantee:** Community contributions must not introduce automatic approvals, generic MCP execution tools, unredacted secrets, or enabled-by-default external mutations. These boundaries are protected project contracts.
 
 ## Quick-start examples
 

@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qualtan"
+version = "0.1.0"
+description = "Governed AI quality engineering workflows with typed validation and approval controls."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [
+  { name = "QUALTAN Contributors" },
+]
+keywords = ["ai", "quality-engineering", "test-automation", "playwright", "mcp", "governance", "validation"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+  "click>=8.1,<9",
+  "jira>=3.8,<4",
+  "mcp>=1.6,<2",
+  "openai>=1.68,<3",
+  "pydantic>=2.7,<3",
+  "python-dotenv>=1.0,<2",
+  "requests>=2.31,<3",
+  "rich>=13.7,<14",
+  "tenacity>=8.2,<10",
+]
+
+[project.optional-dependencies]
+test = [
+  "locust>=2.24,<3",
+  "pytest>=9.0.3,<10",
+]
+
+[project.urls]
+Homepage = "https://github.com/itismohan/qualtan"
+Documentation = "https://github.com/itismohan/qualtan#readme"
+Repository = "https://github.com/itismohan/qualtan"
+Issues = "https://github.com/itismohan/qualtan/issues"
+Security = "https://github.com/itismohan/qualtan/security/advisories"
+
+[project.scripts]
+qualtan = "cli.main:cli"
+
+[tool.setuptools]
+py-modules = ["mcp_server"]
+packages = [
+  "agents",
+  "application",
+  "cli",
+  "core",
+  "domain",
+  "evals",
+  "evals.graders",
+  "infrastructure",
+  "integrations",
+  "validators",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

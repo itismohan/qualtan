@@ -10,16 +10,22 @@
 *.crt
 *.cer
 
-# Python runtime output
+# Python runtime and package-build output
 __pycache__/
 *.py[cod]
 .pytest_cache/
+build/
+dist/
+*.egg-info/
+*.whl
+*.tar.gz
 
 # Node and browser-test output
 node_modules/
 playwright-report/
 test-results/
 
-# Local validation and operating-system files
+# Local validation, supply-chain, and operating-system files
 artifacts/validation/
+artifacts/sbom/
 .DS_Store

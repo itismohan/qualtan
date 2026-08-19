@@ -1,0 +1,26 @@
+# Default review owner for the current bootstrap maintainer model.
+* @itismohan
+
+# Governed execution, security policy, and MCP boundaries.
+/infrastructure/security.py @itismohan
+/infrastructure/llm_gateway.py @itismohan
+/infrastructure/test_execution.py @itismohan
+/mcp_server.py @itismohan
+/.cursor/ @itismohan
+/.codex/ @itismohan
+/.kiro/ @itismohan
+/.mcp.json @itismohan
+
+# Persisted contracts and workflow semantics.
+/domain/ @itismohan
+/application/workflows.py @itismohan
+/validators/ @itismohan
+
+# Community, security, release, and CI controls.
+/.github/ @itismohan
+/LICENSE @itismohan
+/NOTICE @itismohan
+/SECURITY.md @itismohan
+/GOVERNANCE.md @itismohan
+/RELEASE.md @itismohan
+/pyproject.toml @itismohan

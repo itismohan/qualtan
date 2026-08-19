@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 from dataclasses import replace
 from pathlib import Path
 
 import pytest
+from click.testing import CliRunner
 
 from application.agents import RequirementAnalysisService, TestCodeGenerationService, TestDesignService
 from application.workflows import QualityWorkflow, RunOptions, WorkflowDependencies
@@ -29,6 +31,7 @@ from infrastructure.evidence import FailureEvidenceCollector
 from infrastructure.retrieval import KnowledgeStore
 from infrastructure.security import ExecutionPolicy, PolicyViolation, SensitiveDataRedactor
 from validators.quality_gates import SchemaIntegrityGate, SourceSafetyGate, TestCoverageGate, ValidationPipeline
+from cli.main import cli
 
 
 def _story() -> StoryDetails:
@@ -116,6 +119,22 @@ def _workflow(tmp_path: Path) -> QualityWorkflow:
         validator=validator,
     )
     return QualityWorkflow(dependencies)
+
+
+def test_doctor_reports_readiness_without_secret_values(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("QUALTAN_REQUIRE_APPROVAL_FOR_EXECUTION", "true")
+    monkeypatch.setenv("QUALTAN_REQUIRE_APPROVAL_FOR_MUTATIONS", "true")
+    monkeypatch.setenv("QUALTAN_ALLOW_EXTERNAL_MUTATIONS", "false")
+    result = CliRunner().invoke(cli, ["doctor", "--json"])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.output)
+    assert payload["runtime"]["python_supported"] is True
+    assert payload["policy"]["execution_approval_required"] is True
+    assert payload["policy"]["mutation_approval_required"] is True
+    assert payload["policy"]["external_mutations_enabled"] is False
+    assert "OPENAI_API_KEY" not in result.output
+    assert "JIRA_TOKEN" not in result.output
 
 
 def test_workflow_is_durable_and_validates_generated_code(tmp_path: Path) -> None:

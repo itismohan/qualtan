@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -31,7 +33,7 @@ from agents.security_agent import SecurityAgent
 from agents.xray_agent import XRayAgent
 from application.factory import build_quality_workflow
 from application.workflows import RunOptions, WorkflowError
-from core.config import ConfigurationError
+from core.config import ConfigurationError, Settings
 from domain.models import KnowledgeDocument, SourceReference
 from evals.graders.quality import evaluate_work_item
 from infrastructure.retrieval import KnowledgeStore
@@ -42,6 +44,63 @@ console = Console()
 @click.group()
 def cli() -> None:
     """QUALTAN: governed, evidence-based AI quality engineering."""
+
+
+@cli.command(name="doctor")
+@click.option("--json", "as_json", is_flag=True, help="Emit machine-readable diagnostic output.")
+def doctor(as_json: bool) -> None:
+    """Report local runtime readiness without exposing secret values or target hosts."""
+    required_modules = ("click", "pydantic", "requests", "tenacity", "openai", "mcp")
+    module_checks = {
+        module: importlib.util.find_spec(module) is not None
+        for module in required_modules
+    }
+    python_supported = sys.version_info >= (3, 11)
+    source_checkout = (PROJECT_ROOT / "pyproject.toml").is_file()
+    project_files = {
+        "source_checkout": source_checkout,
+        "env_template": (PROJECT_ROOT / ".env.example").is_file() if source_checkout else None,
+        "requirements": (PROJECT_ROOT / "requirements.txt").is_file() if source_checkout else None,
+        "policy_documentation": (PROJECT_ROOT / "SECURITY.md").is_file() if source_checkout else None,
+        "license": (PROJECT_ROOT / "LICENSE").is_file() if source_checkout else None,
+    }
+    settings = Settings.from_env()
+    payload = {
+        "ready": python_supported and all(module_checks.values()) and (
+            not source_checkout or all(value is True for key, value in project_files.items() if key != "source_checkout")
+        ),
+        "runtime": {
+            "python": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+            "python_supported": python_supported,
+            "node_available": shutil.which("node") is not None,
+            "npm_available": shutil.which("npm") is not None,
+            "playwright_command_available": shutil.which("playwright") is not None,
+        },
+        "modules": module_checks,
+        "project_files": project_files,
+        "configuration": {
+            "env_file_present": (PROJECT_ROOT / ".env").is_file(),
+            "llm_credentials_configured": bool(settings.openai_api_key),
+            "jira_credentials_configured": bool(settings.jira_url and settings.jira_user and settings.jira_token),
+            "xray_credentials_configured": bool(settings.xray_client_id and settings.xray_client_secret),
+        },
+        "policy": {
+            "external_mutations_enabled": settings.allow_external_mutations,
+            "execution_approval_required": settings.require_approval_for_execution,
+            "mutation_approval_required": settings.require_approval_for_mutations,
+            "sensitive_data_redaction_enabled": settings.redact_sensitive_data,
+            "allowed_execution_host_count": len(settings.allowed_execution_hosts),
+        },
+        "notes": [
+            "Diagnostic output intentionally omits secret values, endpoint values, and allowlisted host names.",
+            "Repository-only documentation checks are skipped for an installed wheel; consult the published repository for source assets.",
+            "External execution and mutation remain controlled by configured policy and recorded approvals.",
+        ],
+    }
+    if as_json:
+        console.print_json(data=payload)
+        return
+    console.print_json(data=payload)
 
 
 @cli.command(name="jira-agent")

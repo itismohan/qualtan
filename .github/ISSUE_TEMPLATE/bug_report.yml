@@ -1,0 +1,74 @@
+name: Bug report
+description: Report a reproducible defect in QUALTAN.
+title: "bug: "
+labels: ["type: bug", "status: needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a defect. Do not include credentials, customer data, production hosts, or vulnerability details. Use private security reporting for a suspected security issue.
+  - type: input
+    id: version
+    attributes:
+      label: QUALTAN version or commit
+      description: Provide the released version or commit SHA.
+      placeholder: "v0.1.0 or abc1234"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, Python, Node.js, and browser-test versions where relevant.
+      placeholder: "Ubuntu 24.04, Python 3.11, Node.js 22"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide the smallest redacted command, configuration, or test case that reproduces the issue.
+      placeholder: |
+        1. Run ...
+        2. Approve ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and redacted output
+      description: Remove tokens, personal data, internal URLs, and production evidence before submitting.
+    validations:
+      required: true
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Affected area
+      options:
+        - Core workflow or domain model
+        - Validation or policy control
+        - CLI
+        - MCP configuration or server
+        - Jira or X-Ray integration
+        - Playwright, REST, or GraphQL mock testing
+        - Performance smoke testing
+        - Documentation or examples
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety checks
+      options:
+        - label: I have removed secrets, private data, internal hosts, and production evidence.
+          required: true
+        - label: This is not a suspected security vulnerability.
+          required: true

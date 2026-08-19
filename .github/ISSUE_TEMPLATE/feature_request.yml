@@ -1,0 +1,56 @@
+name: Feature or integration request
+description: Propose a user-focused capability, adapter, or documentation improvement.
+title: "feature: "
+labels: ["type: feature", "status: needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Start a GitHub Discussion for an early design conversation. Use this form when you can state a scoped user problem and a safe proposed outcome. Do not include credentials or proprietary customer material.
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Describe the quality-engineering outcome that is difficult today and who experiences it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Explain the smallest useful user-facing behavior. Do not prescribe an implementation prematurely.
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Core workflow
+        - Typed domain contract
+        - Validator or policy control
+        - CLI or developer experience
+        - MCP tool or IDE configuration
+        - Integration adapter
+        - Test runner or evidence collection
+        - Documentation or example
+        - Release or community operations
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Policy, security, and side-effect impact
+      description: State whether the proposal reads external data, runs tests, handles secrets, changes external systems, or changes approvals. Explain why existing controls remain sufficient.
+      placeholder: "No external mutation; execution remains approval-gated and host-allowlisted."
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and migration impact
+      description: Note any effect on persisted work items, CLI commands, MCP tools, policies, integrations, or generated artifacts.
