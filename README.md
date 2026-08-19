@@ -285,5 +285,3 @@ QUALTAN treats Jira text, logs, HTML, DOM snapshots, network output, and API spe
 ## Development notes
 
 The framework is designed for incremental extension. Add a new quality capability by first defining strict domain contracts, then implementing a pure application service, adding deterministic validato[...]
-
-The previous lightweight README is preserved as `README.legacy.md` for historical reference.
